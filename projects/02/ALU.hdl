@@ -43,4 +43,37 @@ CHIP ALU {
 
     PARTS:
    // Put you code here:
+   // 首先根据教科书中的提示，考虑nx和zx控制x的取值（预处理），然后根据f选择（函数选择部分），最后进行out和no的后处理，输出结果（out，zr，ng）整合。
+   // 预处理部分
+   // zx=1,outzx=0
+   // zx=0,outzx=x
+   // nx=1,outnx=Not16(outnx)
+   // nx=0,outnx=outnx
+   // 上述等价于 
+   Mux16(a=x,b=false,sel=zx,out=outzx);
+   Not16(in=outzx,out=noutzx);
+   Mux16(a=outzx,b=noutzx,sel=nx,out=outnx);
+   // 同理
+   Mux16(a=y,b=false,sel=zy,out=outzy);
+   Not16(in=outzy,out=noutzy);
+   Mux16(a=outzy,b=noutzy,sel=ny,out=outny);
+   //
+   // 函数选择部分
+   // f=1,outf=Add16(outnx,outny)
+   // f=0,outf=And16(outnx,outny)
+   // 即
+   Add16(a=outnx,b=outny,out=nxaddny);
+   And16(a=outnx,b=outny,out=nxandny);
+   Mux16(a=nxandny,b=nxaddny,sel=f,out=outf);
+   //
+   // no后处理
+   Not16(in=outf,out=noutf);
+   // out后处理
+   Mux16(a=outf,b=noutf,sel=no,out=out,out[0..7]=outlow,out[8..15]=outhigh,out[15]=ng);
+   // zr置位
+   Or8Way(in=outlow,out=zr1);
+   Or8Way(in=outhigh,out=zr2);
+   Or(a=zr1,b=zr2,out=nzr);
+   Not(in=nzr,out=zr);
+   // ng置位
 }
