@@ -16,4 +16,15 @@ CHIP RAM8 {
 
     PARTS:
     // Put your code here:
+    // 8个寄存器，使用3位地址选取指定寄存器，需要使用到一个3-8选择器(DMux8Way))
+    DMux8Way(in=load,sel=address,a=one,b=two,c=three,d=four,e=five,f=six,g=seven,h=eight);
+    Register(in=in,load=one,out=outa);
+    Register(in=in,load=two,out=outb);
+    Register(in=in,load=three,out=outc);
+    Register(in=in,load=four,out=outd);
+    Register(in=in,load=five,out=oute);
+    Register(in=in,load=six,out=outf);
+    Register(in=in,load=seven,out=outg);
+    Register(in=in,load=eight,out=outh);
+    Mux8Way16(a=outa,b=outb,c=outc,d=outd,e=oute,f=outf,g=outg,h=outh,sel=address,out=out);
 }

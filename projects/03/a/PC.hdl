@@ -17,4 +17,18 @@ CHIP PC {
 
     PARTS:
     // Put your code here:
+    // 使用一个Register存储原始数据，然后等待时钟脉冲
+    // 还需要提供重置/加载功能
+    // 使用3个选择器（reset、inc、load），根据前面的IF逻辑反写
+    // 首先使用Register中的结果加1
+    Inc16(in=feedback,out=incout);
+    // 根据inc位选择
+    Mux16(a=feedback,b=incout,sel=inc,out=one);
+    // 然后根据load确定是否加载in到Register中
+    Mux16(a=one,b=in,sel=load,out=two);
+    // 根据reset确定是否清除（优先级最高）
+    Mux16(a=two,b=false,sel=reset,out=three);
+    // 寄存器的load位常开即可，因为也需要读出数据
+    Register(in=three,load=true,out=feedback,out=out);
+
 }
