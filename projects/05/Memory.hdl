@@ -28,4 +28,14 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
+    // 包括一个RAM16K(0-16383, 000 0000 0000 0000 - 011 1111 1111 1111 1111)和一个Screen(RAM8K,16384-24575,100 0000 0000 0000 - 101 1111 1111 1111 1111)以及一个Keyboard芯片(Register,245765, 110 0000 0000 0000 0000)
+    
+    DMux4Way(in=load,sel=address[13..14],a=loadR1,b=loadR2,c=loadScreen,d=loadKeyboard);
+    Or(a=loadR1,b=loadR2,out=loadRAM16K);
+
+    RAM16K(in=in,load=loadRAM16K,address=address[0..13],out=ram16kout);
+    Screen(in=in,load=loadScreen,address=address[0..12],out=screenout);
+    Keyboard(out=keyboardout);
+    
+    Mux4Way16(a=ram16kout,b=ram16kout,c=screenout,d=keyboardout,sel=address[13..14],out=out);
 }

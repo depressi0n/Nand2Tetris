@@ -40,4 +40,68 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    // instruction[15]=1 C-instruction
+    // 从instrcution出发，观察C-instruction的一些内容
+    // dest:d1=1 写入A寄存器，d2=1 写入D寄存器， d3=1 写入M
+    // comp:a用于选择A还是M，并与D参与计算
+    // jump:j1=1 out<0, j2=1 out=0, j3=1 out>0
+    
+    And(a=instruction[15],b=instruction[0],out=j3); // j3
+    And(a=instruction[15],b=instruction[1],out=j2); // j2
+    And(a=instruction[15],b=instruction[2],out=j1); // j1
+
+    And(a=instruction[15],b=instruction[3],out=d3); // d3
+    And(a=instruction[15],b=instruction[4],out=d2); // d2
+    And(a=instruction[15],b=instruction[5],out=d1); // d1
+
+    And(a=instruction[15],b=instruction[6],out=c6); // c6
+    And(a=instruction[15],b=instruction[7],out=c5); // c5
+    And(a=instruction[15],b=instruction[8],out=c4); // c4
+    And(a=instruction[15],b=instruction[9],out=c3); // c3
+    And(a=instruction[15],b=instruction[10],out=c2); // c2
+    And(a=instruction[15],b=instruction[11],out=c1); // c1
+    And(a=instruction[15],b=instruction[12],out=ca); // a
+
+    // instruction[15]=0 A-instruction
+    // 直接ALU的结果写入A寄存器
+    Not(in=instruction[15],out=loadAOrNotPre);
+    // 考虑到如果d1=1(instruction[5]=1)，结果要写入A寄存器
+    Mux16(a=ALUout,b=instruction,sel=loadAOrNotPre,out=mux1out);
+    Or(a=loadAOrNotPre,b=d1,out=loadAOrNot);
+    ARegister(in=mux1out,load=loadAOrNot,out=ARout);
+    
+    // ALU Part
+    DRegister(in=ALUout,load=d2,out=DRout);
+    Mux16(a=ARout,b=inM,sel=ca,out=mux2out);
+    ALU(x=DRout,y=mux2out,zx=c1,nx=c2,zy=c3,ny=c4,f=c5,no=c6,out=ALUout,out=outM,zr=zr,ng=ng);
+
+    // PC Part 
+    // load 取决于 跳转指令j1、j2、j3，与ALU中zr和ng有关
+    // 当zr=1 ng=0 j2=1 || zr=0,ng=1,j1=1 || zr=0,ng=0,j3=1 时load触发, 无条件跳转时也触发load
+    Not(in=zr,out=notzr);
+    Not(in=ng,out=notng);
+    And(a=notzr,b=notng,out=positive);
+    And(a=zr,b=notng,out=zero);
+    And(a=notzr,b=ng,out=negative);
+    // 条件跳转
+    And(a=j3,b=positive,out=PosJump);
+    And(a=j2,b=zero,out=ZeroJump);
+    And(a=j1,b=negative,out=NegJump);
+    // 无条件跳转
+    And(a=j1,b=j2,out=andT1Out);
+    And(a=andT1Out,b=j3,out=UCJump);
+
+    Or(a=PosJump,b=ZeroJump,out=orT1Out);
+    Or(a=UCJump,b=NegJump,out=orT2Out);
+    Or(a=orT1Out,b=orT2Out,out=loadPre);
+    And(a=instruction[15],b=loadPre,out=load);
+    
+    // inc 取决于load没有触发
+    Not(in=load,out=inc);
+
+    PC(in=ARout,load=load,inc=inc,reset=reset,out[0..14]=pc);
+
+    // 输入到M
+    And(a=instruction[15],b=d3,out=writeM);
+    And16(a=ARout,b=ARout,out[0..14]=addressM);
 }
