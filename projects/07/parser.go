@@ -237,7 +237,15 @@ M=D // 压入栈中
 M=M+1
 `
 		case STATIC:
-			panic("implement me!")
+			// 使用p.VMFileName_[vairiableName]表示静态变量，借助了汇编程序为程序中变量提供RAM单元的特性
+			staticVariableName:=strings.TrimPrefix(strings.ReplaceAll(p.VMFileName,"/","."),".asm")+"."+c.Arg2()
+			res=fmt.Sprintf("@%s\n",staticVariableName)+`D=M
+@SP
+A=M
+M=D
+@SP
+M=M+1 // 压入栈中
+`
 		case CONSTANT:
 			// 将常数压入栈中
 				res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@SP
@@ -342,7 +350,15 @@ M=D
 M=M-1
 `
 		case STATIC:
-			panic("implement me!")
+			staticVariableName:=strings.TrimPrefix(strings.ReplaceAll(p.VMFileName,"/","."),".asm")+"."+c.Arg2()
+			res=`@SP
+A=M-1
+D=M
+@SP
+M=M-1 // 栈中数据出栈
+`+fmt.Sprintf("@%s\n",staticVariableName)+
+`M=D
+`
 		case CONSTANT:
 			// 不应该支持pop constant n
 			log.Fatalf("Invalid pop command with segment constant")
