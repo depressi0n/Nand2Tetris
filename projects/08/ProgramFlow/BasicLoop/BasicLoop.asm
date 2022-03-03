@@ -1,0 +1,150 @@
+@0
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@0
+D=A
+@R1
+D=D+M
+@SP
+A=M
+M=D // 使用栈顶存放位置信息
+@SP
+A=M-1
+D=M
+@SP
+A=M
+A=M
+M=D
+@SP
+M=M-1
+(LOOP_START)
+@0
+D=A
+@R2
+A=D+M
+D=M // 取出argument[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+@0
+D=A
+@R1
+A=D+M
+D=M // 取出local[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D+M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@0
+D=A
+@R1
+D=D+M
+@SP
+A=M
+M=D // 使用栈顶存放位置信息
+@SP
+A=M-1
+D=M
+@SP
+A=M
+A=M
+M=D
+@SP
+M=M-1
+@0
+D=A
+@R2
+A=D+M
+D=M // 取出argument[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+@1
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=M-D
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@0
+D=A
+@R2
+D=D+M
+@SP
+A=M
+M=D // 使用栈顶存放位置信息
+@SP
+A=M-1
+D=M
+@SP
+A=M
+A=M
+M=D
+@SP
+M=M-1
+@0
+D=A
+@R2
+A=D+M
+D=M // 取出argument[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+@SP
+A=M-1
+D=M
+@SP
+M=M-1
+@LOOP_START
+
+D;JNE
+@0
+D=A
+@R1
+A=D+M
+D=M // 取出local[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+(END)
+	@END
+	0;JMP
