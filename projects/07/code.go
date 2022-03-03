@@ -195,7 +195,7 @@ func(c *Command)OperatorType()Operator{
 	return c.operatorType
 }
 func(c *Command)SegmentType()SegmentType{
-	if c.Type()!=C_PUSH{
+	if c.Type()!=C_PUSH && c.Type()!=C_POP{
 		log.Fatalf("Command.SegmentType shoud not be call by type:%s",CommandType2Str[c.Type()])
 	}
 

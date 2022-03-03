@@ -197,8 +197,7 @@ M=D
 M=M+1
 `
 		case OP_NOT:
-				res=`
-@SP
+				res=`@SP
 M=M-1
 A=M
 D=!M
@@ -214,12 +213,31 @@ M=M+1
 		}
 	case C_PUSH:
 		// push segment index
-		// 暂时只支持push constant x，将x放入栈中
 		switch c.SegmentType(){
 		case ARGUMENT:
+			// 基址直接映射到RAM[2]即ARG寄存器上
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R2
+A=D+M
+D=M // 取出argument[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+`
 		case LOCAL:
-			// 
+			// 基址直接映射到RAM[1]即LCL寄存器上
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R1
+A=D+M
+D=M // 取出local[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+`
 		case STATIC:
+			panic("implement me!")
 		case CONSTANT:
 			// 将常数压入栈中
 				res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@SP
@@ -229,22 +247,152 @@ M=D
 M=M+1
 `
 		case THIS:
+			// RAM[3]
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R3
+A=D+M
+D=M // 取出local[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+`
 		case THAT:
+			// RAM[4]
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R4
+A=D+M
+D=M // 取出local[index]的数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+`
 		case POINTER:
+			panic("implement me!")
 		case TEMP:
+			// RAM[5-12]
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@5
+A=D+A
+D=M // 取出数据
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+`
+		default:
+			log.Fatalf("Invalid Segment Type")
+		}
+	case C_POP:
+		switch c.SegmentType(){
+		case ARGUMENT:
+			// 基址直接映射到RAM[2]即ARG寄存器上
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R2
+D=D+M
+@SP
+A=M
+M=D // 使用栈顶存放位置信息
+@SP
+A=M-1
+D=M
+@SP
+A=M
+A=M
+M=D
+@SP
+M=M-1
+`
+		case LOCAL:
+			// 基址直接映射到RAM[1]即LCL寄存器上
+res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R1
+D=D+M
+@SP
+A=M
+M=D // 使用栈顶存放位置信息
+@SP
+A=M-1
+D=M
+@SP
+A=M
+A=M
+M=D
+@SP
+M=M-1
+`
+		case STATIC:
+			panic("implement me!")
+		case CONSTANT:
+			// 将常数压入栈中
+				res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@SP
+A=M
+M=D
+@SP
+M=M+1
+`
+		case THIS:
+			// RAM[3]
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R3
+A=D+A
+D=D+M
+@SP
+A=M
+M=D // 使用栈顶存放位置信息
+@SP
+A=M-1
+D=M
+@SP
+A=M
+A=M
+M=D
+@SP
+M=M-1
+`
+		case THAT:
+			// RAM[4]
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R4
+A=D+A
+D=D+M
+@SP
+A=M
+M=D // 使用栈顶存放位置信息
+@SP
+A=M-1
+D=M
+@SP
+A=M
+A=M
+M=D
+@SP
+M=M-1
+`
+		case POINTER:
+			panic("implement me!")
+		case TEMP:
+			// RAM[5-12]
+			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@5
+D=D+A
+@SP
+A=M
+M=D // 使用栈顶存放位置信息
+@SP
+A=M-1
+D=M
+@SP
+A=M
+A=M
+M=D
+@SP
+M=M-1
+`
 		default:
 			log.Fatalf("Invalid Segment Type")
 		}
 
-	
-		
-		
-	case C_POP:
-
 	case C_LABEL:
-
+		panic("implement me!")
 	case C_GOTO:
-
+		panic("implement me!")
 	case C_IF:
 		panic("implement me!")
 	case C_FUNCTION:
@@ -272,8 +420,7 @@ func(p *Parser)Run(){
 		f.WriteString(p.Translate(p.VMCommands[i]))
 		p.Current++
 	}
-	f.WriteString(`
-(END)
+	f.WriteString(`(END)
 	@END
 	0;JMP`)
 }
