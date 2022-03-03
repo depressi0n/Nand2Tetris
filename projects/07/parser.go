@@ -269,7 +269,28 @@ M=D // 压入栈中
 M=M+1
 `
 		case POINTER:
-			panic("implement me!")
+			arg2:=c.Arg2()
+			if arg2== "0"{
+				res=`@R3
+D=M // 取出this当前指向的地址
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+`
+			}else if arg2 == "1"{
+				res=`@R4
+D=M // 取出this当前指向的地址
+@SP
+A=M
+M=D // 压入栈中
+@SP
+M=M+1
+`
+			}else{
+				log.Fatalf("Invalid parameter with pointer segment:%s",arg2)
+			}
 		case TEMP:
 			// RAM[5-12]
 			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@5
@@ -323,17 +344,11 @@ M=M-1
 		case STATIC:
 			panic("implement me!")
 		case CONSTANT:
-			// 将常数压入栈中
-				res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@SP
-A=M
-M=D
-@SP
-M=M+1
-`
+			// 不应该支持pop constant n
+			log.Fatalf("Invalid pop command with segment constant")
 		case THIS:
 			// RAM[3]
 			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R3
-A=D+A
 D=D+M
 @SP
 A=M
@@ -351,7 +366,6 @@ M=M-1
 		case THAT:
 			// RAM[4]
 			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@R4
-A=D+A
 D=D+M
 @SP
 A=M
@@ -367,7 +381,28 @@ M=D
 M=M-1
 `
 		case POINTER:
-			panic("implement me!")
+			arg2:=c.Arg2()
+			if arg2== "0"{
+				res=`@SP
+A=M-1
+D=M // 取出栈顶数据
+@SP
+M=M-1
+@R3
+M=D
+`
+			}else if arg2 == "1"{
+				res=`@SP
+A=M-1
+D=M // 取出栈顶数据
+@SP
+M=M-1
+@R4
+M=D
+`
+			}else{
+				log.Fatalf("Invalid parameter with pointer segment:%s",arg2)
+			}
 		case TEMP:
 			// RAM[5-12]
 			res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@5
