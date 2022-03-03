@@ -1,0 +1,452 @@
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE2
+D;JEQ
+@SP
+A=M
+M=0
+@SKIP2
+0;JMP
+(TRUE2)
+  @SP
+  A=M
+  M=-1
+  @SKIP2
+  0;JMP
+(SKIP2)
+  @SP
+  M=M+1
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@16
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE5
+D;JEQ
+@SP
+A=M
+M=0
+@SKIP5
+0;JMP
+(TRUE5)
+  @SP
+  A=M
+  M=-1
+  @SKIP5
+  0;JMP
+(SKIP5)
+  @SP
+  M=M+1
+@16
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@17
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE8
+D;JEQ
+@SP
+A=M
+M=0
+@SKIP8
+0;JMP
+(TRUE8)
+  @SP
+  A=M
+  M=-1
+  @SKIP8
+  0;JMP
+(SKIP8)
+  @SP
+  M=M+1
+@892
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE11
+D;JLT
+@SP
+A=M
+M=0
+@SKIP11
+0;JMP
+(TRUE11)
+  @SP
+  A=M
+  M=-1
+  @SKIP11
+  0;JMP
+(SKIP11)
+  @SP
+  M=M+1
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@892
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE14
+D;JLT
+@SP
+A=M
+M=0
+@SKIP14
+0;JMP
+(TRUE14)
+  @SP
+  A=M
+  M=-1
+  @SKIP14
+  0;JMP
+(SKIP14)
+  @SP
+  M=M+1
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@891
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE17
+D;JLT
+@SP
+A=M
+M=0
+@SKIP17
+0;JMP
+(TRUE17)
+  @SP
+  A=M
+  M=-1
+  @SKIP17
+  0;JMP
+(SKIP17)
+  @SP
+  M=M+1
+@32767
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE20
+D;JGT
+@SP
+A=M
+M=0
+@SKIP20
+0;JMP
+(TRUE20)
+  @SP
+  A=M
+  M=-1
+  @SKIP20
+  0;JMP
+(SKIP20)
+  @SP
+  M=M+1
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@32767
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE23
+D;JGT
+@SP
+A=M
+M=0
+@SKIP23
+0;JMP
+(TRUE23)
+  @SP
+  A=M
+  M=-1
+  @SKIP23
+  0;JMP
+(SKIP23)
+  @SP
+  M=M+1
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@32766
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M // 第一个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+@TRUE26
+D;JGT
+@SP
+A=M
+M=0
+@SKIP26
+0;JMP
+(TRUE26)
+  @SP
+  A=M
+  M=-1
+  @SKIP26
+  0;JMP
+(SKIP26)
+  @SP
+  M=M+1
+@57
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@31
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@53
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D+M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@112
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=M-D
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=-M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D&M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@82
+D=A
+@SP
+A=M
+M=D
+@SP
+M=M+1
+@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D|M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+
+@SP
+M=M-1
+A=M
+D=!M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+
+(END)
+	@END
+	0;JMP

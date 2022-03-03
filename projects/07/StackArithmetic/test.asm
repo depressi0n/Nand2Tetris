@@ -1,6 +1,16 @@
-@0
+@SP
+M=M-1
 A=M
+D=M
+@SP
+M=M-1
 A=M
-(END)
-    @END
+D=D-M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+(SKIP)
+    @SKIP
     0;JMP

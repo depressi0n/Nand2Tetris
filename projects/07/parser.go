@@ -13,6 +13,7 @@ type Parser struct{
 	VMFileName string
 	SymbolTable *SymbolTable
 	VMCommands []*Command
+	Current int
 	// some variables that changed in the parse process such as some counter for different segment 
 
 }
@@ -60,11 +61,10 @@ func(p *Parser)Translate(c *Command)string{
 	case C_ARITHMETIC:
 		switch c.OperatorType(){
 		case OP_ADD:
-				res=`
-@SP
+				res=`@SP
 M=M-1
 A=M
-D=M // 第一个操作数
+D=M
 @SP
 M=M-1
 A=M
@@ -76,13 +76,138 @@ M=D
 M=M+1
 `
 		case OP_SUB:
+				res=`@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=M-D
+@SP
+A=M
+M=D
+@SP
+M=M+1
+`
 		case OP_NEG:
+				res=`@SP
+M=M-1
+A=M
+D=-M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+`
 		case OP_EQ:
+				res=`@SP
+M=M-1
+A=M
+D=M // 第二个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+`+fmt.Sprintf("@TRUE%v\n",p.Current)+`D;JEQ
+@SP
+A=M
+M=0
+`+fmt.Sprintf("@SKIP%v\n",p.Current)+`0;JMP
+`+fmt.Sprintf("(TRUE%v)\n",p.Current)+`  @SP
+  A=M
+  M=-1
+  `+fmt.Sprintf("@SKIP%v\n",p.Current)+`  0;JMP
+`+fmt.Sprintf("(SKIP%v)\n",p.Current)+`  @SP
+  M=M+1
+`
 		case OP_GT:
+			// 涉及到标签不重复？使用一个递增量
+			// 另一种处理方式使用重复的标签值，因为所有的基本设定是一致
+			res=`@SP
+M=M-1
+A=M
+D=M // 第二个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+`+fmt.Sprintf("@TRUE%v\n",p.Current)+`D;JGT
+@SP
+A=M
+M=0
+`+fmt.Sprintf("@SKIP%v\n",p.Current)+`0;JMP
+`+fmt.Sprintf("(TRUE%v)\n",p.Current)+`  @SP
+  A=M
+  M=-1
+  `+fmt.Sprintf("@SKIP%v\n",p.Current)+`  0;JMP
+`+fmt.Sprintf("(SKIP%v)\n",p.Current)+`  @SP
+  M=M+1
+`
 		case OP_LT:
+			res=`@SP
+M=M-1
+A=M
+D=M // 第二个操作数
+@SP
+M=M-1
+A=M
+D=M-D // 第一个操作数减去第二个操作数
+`+fmt.Sprintf("@TRUE%v\n",p.Current)+`D;JLT
+@SP
+A=M
+M=0
+`+fmt.Sprintf("@SKIP%v\n",p.Current)+`0;JMP
+`+fmt.Sprintf("(TRUE%v)\n",p.Current)+`  @SP
+  A=M
+  M=-1
+  `+fmt.Sprintf("@SKIP%v\n",p.Current)+`  0;JMP
+`+fmt.Sprintf("(SKIP%v)\n",p.Current)+`  @SP
+  M=M+1
+`
 		case OP_AND:
+				res=`@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D&M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+`
 		case OP_OR:
+			res=`@SP
+M=M-1
+A=M
+D=M
+@SP
+M=M-1
+A=M
+D=D|M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+`
 		case OP_NOT:
+				res=`
+@SP
+M=M-1
+A=M
+D=!M
+@SP
+A=M
+M=D
+@SP
+M=M+1
+`
 		default:
 			log.Fatalf("Invalid Operator Type")
 
@@ -93,11 +218,11 @@ M=M+1
 		switch c.SegmentType(){
 		case ARGUMENT:
 		case LOCAL:
+			// 
 		case STATIC:
 		case CONSTANT:
 			// 将常数压入栈中
-				res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`
-@SP
+				res=fmt.Sprintf("@%v\nD=A\n",c.Arg2())+`@SP
 A=M
 M=D
 @SP
@@ -145,6 +270,7 @@ func(p *Parser)Run(){
 	for i:=0;i<len(p.VMCommands);i++{
 		// handle each command
 		f.WriteString(p.Translate(p.VMCommands[i]))
+		p.Current++
 	}
 	f.WriteString(`
 (END)
