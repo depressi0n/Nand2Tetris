@@ -119,34 +119,34 @@ var Op2Str= map[Operator]string{
 
 type SegmentType int
 const(
-	ARGUMENT SegmentType=iota
-	LOCAL
-	STATIC
-	CONSTANT
-	THIS
-	THAT
-	POINTER
-	TEMP
+	SEG_ARGUMENT SegmentType=iota
+	SEG_LOCAL
+	SEG_STATIC
+	SEG_CONSTANT
+	SEG_THIS
+	SEG_THAT
+	SEG_POINTER
+	SEG_TEMP
 )
 var Str2SegmentType = map[string]SegmentType{
-	"argument":ARGUMENT,
-	"local":LOCAL,
-	"static":STATIC,
-	"constant":CONSTANT,
-	"this":THIS,
-	"that":THAT,
-	"pointer":POINTER,
-	"temp":TEMP,
+	"argument":SEG_ARGUMENT,
+	"local":SEG_LOCAL,
+	"static":SEG_STATIC,
+	"constant":SEG_CONSTANT,
+	"this":SEG_THIS,
+	"that":SEG_THAT,
+	"pointer":SEG_POINTER,
+	"temp":SEG_TEMP,
 }
 var SegmentType2Str = map[SegmentType]string{
-	ARGUMENT:"argument",
-	LOCAL:"local",
-	STATIC:"static",
-	CONSTANT:"constant",
-	THIS:"this",
-	THAT:"that",
-	POINTER:"pointer",
-	TEMP:"temp",
+	SEG_ARGUMENT:"argument",
+	SEG_LOCAL:"local",
+	SEG_STATIC:"static",
+	SEG_CONSTANT:"constant",
+	SEG_THIS:"this",
+	SEG_THAT:"that",
+	SEG_POINTER:"pointer",
+	SEG_TEMP:"temp",
 }
 
 type Command struct{
@@ -213,13 +213,20 @@ func(c *Command)Arg1()string{
 	}
 	
 }
+ 
+func(c *Command)AddPrefixForArg2(prefix string){
+	c.args[1]=strings.ReplaceAll(prefix,"/",".")+c.args[1]
+	return
+}
 func(c *Command)Arg2()string{
 	switch c.commandType {
 	case C_PUSH:
 		return c.args[1]
 	case C_POP:
 		return c.args[1]
-	case C_FUNCTION|C_CALL:
+	case C_FUNCTION:
+		return c.args[1]
+	case C_CALL:
 		return c.args[1]
 	default:
 		log.Fatalf("Should not call the Arg2 method")
